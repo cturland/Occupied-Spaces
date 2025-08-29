@@ -1,2 +1,2 @@
-# classroom_template
-A template for classroom exercises
+# [Occupied Spaces](https://dmoj.ca/problem/ccc18j2)
+

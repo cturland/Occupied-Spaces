@@ -1,1 +1,344 @@
+name: Autograding Tests – CCC18J2 (Occupy parking)
+on:
+  - push
+  - workflow_dispatch
+  - repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
 
+    # Sample-style and basic coverage
+    - name: "Test 1: Sample-like -> 1"
+      id: t1
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T1
+        command: python3 solution.py
+        input: |
+          5
+          CC..C
+          .CC..
+        expected-output: "1"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 2: N=1 both occupied -> 1"
+      id: t2
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T2
+        command: python3 solution.py
+        input: |
+          1
+          C
+          C
+        expected-output: "1"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 3: N=1 only yesterday -> 0"
+      id: t3
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T3
+        command: python3 solution.py
+        input: |
+          1
+          C
+          .
+        expected-output: "0"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 4: N=2 yesterday full, today empty -> 0"
+      id: t4
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T4
+        command: python3 solution.py
+        input: |
+          2
+          CC
+          ..
+        expected-output: "0"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 5: N=2 overlap on slot 1 -> 1"
+      id: t5
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T5
+        command: python3 solution.py
+        input: |
+          2
+          C.
+          C.
+        expected-output: "1"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 6: N=3 single-centre overlap -> 1"
+      id: t6
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T6
+        command: python3 solution.py
+        input: |
+          3
+          .C.
+          .C.
+        expected-output: "1"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 7: N=4 overlap only at pos1 -> 1"
+      id: t7
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T7
+        command: python3 solution.py
+        input: |
+          4
+          C.C.
+          C..C
+        expected-output: "1"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 8: N=5 three middle overlaps -> 3"
+      id: t8
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T8
+        command: python3 solution.py
+        input: |
+          5
+          .CCCC
+          CCCC.
+        expected-output: "3"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 9: N=6 alternating (no overlap) -> 0"
+      id: t9
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T9
+        command: python3 solution.py
+        input: |
+          6
+          C.C.C.
+          .C.C.C
+        expected-output: "0"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 10: N=6 single overlap at pos3 -> 1"
+      id: t10
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T10
+        command: python3 solution.py
+        input: |
+          6
+          CCC...
+          ..CCCC
+        expected-output: "1"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    # Mixed patterns, broader coverage
+    - name: "Test 11: N=10 scattered overlap -> 2"
+      id: t11
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T11
+        command: python3 solution.py
+        input: |
+          10
+          C.CC..C.C.
+          CC..CC..C.
+        expected-output: "2"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 12: N=10 none yesterday -> 0"
+      id: t12
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T12
+        command: python3 solution.py
+        input: |
+          10
+          ..........
+          CCCCCCCCCC
+        expected-output: "0"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 13: N=10 none today -> 0"
+      id: t13
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T13
+        command: python3 solution.py
+        input: |
+          10
+          CCCCCCCCCC
+          ..........
+        expected-output: "0"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 14: N=10 identical pattern every 3rd -> 4"
+      id: t14
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T14
+        command: python3 solution.py
+        input: |
+          10
+          C..C..C..C
+          C..C..C..C
+        expected-output: "4"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 15: N=15 shifted thirds (no overlap) -> 0"
+      id: t15
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T15
+        command: python3 solution.py
+        input: |
+          15
+          C..C..C..C..C..
+          ..C..C..C..C..C
+        expected-output: "0"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 16: N=15 two-of-three vs all-full -> 10"
+      id: t16
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T16
+        command: python3 solution.py
+        input: |
+          15
+          CC.CC.CC.CC.CC.
+          CCCCCCCCCCCCCCC
+        expected-output: "10"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 17: N=20 all occupied both days -> 20"
+      id: t17
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T17
+        command: python3 solution.py
+        input: |
+          20
+          CCCCCCCCCCCCCCCCCCCC
+          CCCCCCCCCCCCCCCCCCCC
+        expected-output: "20"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 18: N=20 odd/even shift (no overlap) -> 0"
+      id: t18
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T18
+        command: python3 solution.py
+        input: |
+          20
+          C.C.C.C.C.C.C.C.C.C.
+          .C.C.C.C.C.C.C.C.C.C
+        expected-output: "0"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 19: N=7 mixed -> 2"
+      id: t19
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T19
+        command: python3 solution.py
+        input: |
+          7
+          C.CCC..
+          .CC.CC.
+        expected-output: "2"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: "Test 20: N=8 mixed -> 2"
+      id: t20
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: CCC18J2 T20
+        command: python3 solution.py
+        input: |
+          8
+          .C..CC..
+          .C..C.C.
+        expected-output: "2"
+        comparison-method: exact
+        timeout: 2
+        max-score: 1
+
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        T1_RESULTS: ${{ steps.t1.outputs.result }}
+        T2_RESULTS: ${{ steps.t2.outputs.result }}
+        T3_RESULTS: ${{ steps.t3.outputs.result }}
+        T4_RESULTS: ${{ steps.t4.outputs.result }}
+        T5_RESULTS: ${{ steps.t5.outputs.result }}
+        T6_RESULTS: ${{ steps.t6.outputs.result }}
+        T7_RESULTS: ${{ steps.t7.outputs.result }}
+        T8_RESULTS: ${{ steps.t8.outputs.result }}
+        T9_RESULTS: ${{ steps.t9.outputs.result }}
+        T10_RESULTS: ${{ steps.t10.outputs.result }}
+        T11_RESULTS: ${{ steps.t11.outputs.result }}
+        T12_RESULTS: ${{ steps.t12.outputs.result }}
+        T13_RESULTS: ${{ steps.t13.outputs.result }}
+        T14_RESULTS: ${{ steps.t14.outputs.result }}
+        T15_RESULTS: ${{ steps.t15.outputs.result }}
+        T16_RESULTS: ${{ steps.t16.outputs.result }}
+        T17_RESULTS: ${{ steps.t17.outputs.result }}
+        T18_RESULTS: ${{ steps.t18.outputs.result }}
+        T19_RESULTS: ${{ steps.t19.outputs.result }}
+        T20_RESULTS: ${{ steps.t20.outputs.result }}
+      with:
+        runners: t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20
